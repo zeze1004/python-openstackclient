@@ -2265,14 +2265,14 @@ class ListServer(command.Lister):
             ).id
 
         # created time 추가하기?
-        created_at = None
-        if parsed_args.project:
-            created_at = identity_common.find_project(
-                identity_client,
-                parsed_args.project,
-                parsed_args.project_domain,
-            ).id
-            parsed_args.all_projects = True
+        # created = None
+        # if parsed_args.project:
+        #     created = identity_common.find_project(
+        #         identity_client,
+        #         parsed_args.project,
+        #         parsed_args.project_domain,
+        #     ).id
+        #     parsed_args.all_projects = True
 
         search_opts = {
             'reservation_id': parsed_args.reservation_id,

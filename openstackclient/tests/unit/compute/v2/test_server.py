@@ -4288,7 +4288,7 @@ class TestServerDumpCreate(TestServer):
     def test_server_dump_multi_servers(self):
         self.run_method_with_servers('trigger_crash_dump', 3)
 
-
+# columns에 created 추가
 class _TestServerList(TestServer):
 
     # Columns to be listed up.
@@ -4296,6 +4296,7 @@ class _TestServerList(TestServer):
         'ID',
         'Name',
         'Status',
+        'Created At',
         'Networks',
         'Image',
         'Flavor',
@@ -4304,6 +4305,7 @@ class _TestServerList(TestServer):
         'ID',
         'Name',
         'Status',
+        'Created At',
         'Task State',
         'Power State',
         'Networks',
@@ -4399,6 +4401,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 self.image.name if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4413,7 +4416,7 @@ class TestServerList(_TestServerList):
             ('long', False),
             ('deleted', False),
             ('name_lookup_one_by_one', False),
-            ('created_at', False),
+            # ('created_at', None),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -4453,6 +4456,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -4522,6 +4526,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 s.image['id'] if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4550,6 +4555,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 s.image['id'] if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4909,6 +4915,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -4970,6 +4977,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                '',
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -5213,7 +5221,7 @@ class TestServerListV273(_TestServerList):
             "id": "server-id-95a56bfc4xxxxxx28d7e418bfd97813a",
             "status": "UNKNOWN",
             "tenant_id": "6f70656e737461636b20342065766572",
-            "created": "2018-12-03T21:06:18Z",
+            "created_at": "2018-12-03T21:06:18Z",
             "links": [
                 {
                     "href": "http://fake/v2.1/",
