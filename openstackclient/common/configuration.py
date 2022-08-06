@@ -58,12 +58,25 @@ class ShowConfiguration(command.ShowOne):
                 if o.secret
             ]
 
-        # 내 비번을 REDACTED로 수정
-        info['password'] = REDACTED
-        for key, value in info.pop('auth', {}).items():
+
+        for key, value in info.pop('auth', {}).items(): # items(): 딕셔너리화해서 저장시킴
+            # parsed_args: Namespace(columns=[], fit_width=False, formatter='table', mask=True, max_width=0, noindent=False, prefix='', print_empty=False, variables=[])
+            # clouds.yml에는 auth.password가 존재해서 if문에 걸림
             if parsed_args.mask and key.lower() in secret_opts:
                 value = REDACTED
 
+            # info: {'api_timeout': None, 'verify': True, 'cacert': None, 'cert': None, 'key': None, 'baremetal_status_code_retries': '5', 'baremetal_introspection_status_code_retries': '5', 'image_status_code_retries': '5', 'disable_vendor_agent': {}, 'interface': 'public', 'floating_ip_source': 'neutron', 'image_api_use_tasks': False, 'image_format': 'qcow2', 'message': '', 'network_api_version': '2', 'object_store_api_version': '1', 'secgroup_source': 'neutron', 'status': 'active', 'additional_user_agent': [('osc-lib', '2.6.0')], 'verbose_level': 1, 'deferred_help': False, 'region_name': 'RegionOne', 'default_domain': 'default', 'timing': False, 'auth_url': 'http://125.6.39.42/identity', 'username': 'admin', 'password': 'secret123', 'beta_command': False, 'identity_api_version': '3', 'volume_api_version': '3', 'auth_type': 'password', 'networks': [], 'auth.user_domain_id': 'default', 'auth.project_domain_id': 'default', 'auth.project_name': 'demo'}
             info['auth.' + key] = value
+
+        if parsed_args.mask:
+            for auth_type in secret_opts:
+                info[auth_type] = REDACTED
+
+
+
+        ### 인증방식에 따른 마스킹 처리 -> secret_opts에 어떤게 넘어올지(추가될지) 모르는데 password redacted 처리는 노노
+        ### parsed_args를 이용해 info의 인증방식을 마스킹해주자
+        # if info['auth_type'] == 'password' or 'token':
+        #     info['password'] = REDACTED
 
         return zip(*sorted(info.items()))
