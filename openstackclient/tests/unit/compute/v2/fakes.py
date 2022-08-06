@@ -612,7 +612,7 @@ class FakeServer(object):
                 'id': 'flavor-id-' + uuid.uuid4().hex,
             },
             'OS-EXT-STS:power_state': 1,
-            'created_at': '2022-07-16T05:00:34Z',
+            'created': '2017-02-27T07:47:25.000000',
         }
 
         # Overwrite default attributes.
@@ -669,7 +669,7 @@ class FakeServer(object):
                 'id': 'flavor-id-' + uuid.uuid4().hex,
             },
             'OS-EXT-STS:power_state': 1,
-            'created': '2022-07-16T05:00:34Z',
+            'created': '2017-02-27T07:47:25.000000',
         }
 
         # Overwrite default attributes.
@@ -1711,7 +1711,7 @@ class FakeServerMigration(object):
         # Set default attributes.
 
         migration_info = {
-            "created": "2016-01-29T13:42:02.000000",
+            "created_at": "2016-01-29T13:42:02.000000",
             "dest_compute": "compute2",
             "dest_host": "1.2.3.4",
             "dest_node": "node2",

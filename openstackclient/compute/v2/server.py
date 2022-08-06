@@ -1850,6 +1850,8 @@ def percent_type(x):
     return x
 
 # server list 출력 구문
+
+
 class ListServer(command.Lister):
     _description = _("List servers")
 
@@ -2397,7 +2399,7 @@ class ListServer(command.Lister):
             'Name',
             'Status',
             # columns 키 추가
-            'Created At',
+            'Created',
         )
 
         if parsed_args.long:
@@ -2522,7 +2524,7 @@ class ListServer(command.Lister):
                     parsed_args.marker,
                 ).id
 
-        # 터미널에 출력하는 list 저장
+        # 서버의 데이터를 받는 구문
         data = compute_client.servers.list(
             search_opts=search_opts,
             marker=marker_id,
@@ -2677,6 +2679,7 @@ class LockServer(command.Command):
         )
         return parser
 
+    # pytest 실행시 take_action의 데이터를 fakes.py의 목업 데이터를 가져오고 테스트코드 비교
     def take_action(self, parsed_args):
 
         compute_client = self.app.client_manager.compute

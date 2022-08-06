@@ -1392,6 +1392,7 @@ class TestServerCreate(TestServer):
     columns = (
         'OS-EXT-STS:power_state',
         'addresses',
+        'created',
         'flavor',
         'id',
         'image',
@@ -1405,6 +1406,7 @@ class TestServerCreate(TestServer):
             server.PowerStateColumn(
                 getattr(self.new_server, 'OS-EXT-STS:power_state')),
             format_columns.DictListColumn({}),
+            self.new_server.created,
             self.flavor.name + ' (' + self.new_server.flavor.get('id') + ')',
             self.new_server.id,
             self.image.name + ' (' + self.new_server.image.get('id') + ')',
@@ -4289,6 +4291,8 @@ class TestServerDumpCreate(TestServer):
         self.run_method_with_servers('trigger_crash_dump', 3)
 
 # columns에 created 추가
+
+
 class _TestServerList(TestServer):
 
     # Columns to be listed up.
@@ -4296,7 +4300,7 @@ class _TestServerList(TestServer):
         'ID',
         'Name',
         'Status',
-        'Created At',
+        'Created',
         'Networks',
         'Image',
         'Flavor',
@@ -4305,7 +4309,7 @@ class _TestServerList(TestServer):
         'ID',
         'Name',
         'Status',
-        'Created At',
+        'Created',
         'Task State',
         'Power State',
         'Networks',
@@ -4401,7 +4405,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                '2017-02-27T07:47:25.000000',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 self.image.name if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4456,7 +4460,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                '2017-02-27T07:47:25.000000',
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -4526,7 +4530,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                '2017-02-27T07:47:25.000000',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 s.image['id'] if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4555,7 +4559,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                '2017-02-27T07:47:25.000000',
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 s.image['id'] if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -4915,7 +4919,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                s.created,
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -4977,7 +4981,7 @@ class TestServerList(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
-                '',
+                s.created,
                 getattr(s, 'OS-EXT-STS:task_state'),
                 server.PowerStateColumn(
                     getattr(s, 'OS-EXT-STS:power_state')
@@ -5009,6 +5013,7 @@ class TestServerListV273(_TestServerList):
         'ID',
         'Name',
         'Status',
+        'Created',
         'Networks',
         'Image',
         'Flavor',
@@ -5017,6 +5022,7 @@ class TestServerListV273(_TestServerList):
         'ID',
         'Name',
         'Status',
+        'Created'
         'Task State',
         'Power State',
         'Networks',
@@ -5063,6 +5069,7 @@ class TestServerListV273(_TestServerList):
                 s.id,
                 s.name,
                 s.status,
+                s.created,
                 format_columns.DictListColumn(s.networks),
                 # Image will be an empty string if boot-from-volume
                 self.image.name if s.image else server.IMAGE_STRING_FOR_BFV,
@@ -5221,7 +5228,7 @@ class TestServerListV273(_TestServerList):
             "id": "server-id-95a56bfc4xxxxxx28d7e418bfd97813a",
             "status": "UNKNOWN",
             "tenant_id": "6f70656e737461636b20342065766572",
-            "created_at": "2018-12-03T21:06:18Z",
+            "created": "2018-12-03T21:06:18Z",
             "links": [
                 {
                     "href": "http://fake/v2.1/",
@@ -5250,7 +5257,7 @@ class TestServerListV273(_TestServerList):
         partial_server = next(data)
         expected_row = (
             'server-id-95a56bfc4xxxxxx28d7e418bfd97813a', '',
-            'UNKNOWN', format_columns.DictListColumn({}), '', '')
+            'UNKNOWN', '2018-12-03T21:06:18Z', format_columns.DictListColumn({}), '', '')
         self.assertEqual(expected_row, partial_server)
 
 
@@ -7669,6 +7676,7 @@ class TestServerShow(TestServer):
         self.columns = (
             'OS-EXT-STS:power_state',
             'addresses',
+            'created',
             'flavor',
             'id',
             'image',
@@ -7689,6 +7697,7 @@ class TestServerShow(TestServer):
             {'public': ['10.20.30.40', '2001:db8::f']},
             'tenant-id-xxx',
             format_columns.DictColumn({}),
+            self.server.created,
         )
 
     def test_show_no_options(self):
@@ -7740,7 +7749,8 @@ class TestServerShow(TestServer):
         self.assertEqual(self.columns, columns)
         # Since the flavor details are in a dict we can't be sure of the
         # ordering so just assert that one of the keys is in the output.
-        self.assertIn('original_name', data[2]._value)
+        # created_at이 추가 돼서 original_name는 그 다음 인덱스에 들어가야함
+        self.assertIn('original_name', data[3]._value)
 
     def test_show_diagnostics(self):
         arglist = [
@@ -8368,6 +8378,7 @@ class TestServerGeneral(TestServer):
             'volumes_attached': [{"id": "6344fe9d-ef20-45b2-91a6"}],
             'addresses': format_columns.DictListColumn(_server.networks),
             'project_id': 'tenant-id-xxx',
+            "created": "2016-01-29T13:42:02.000000",
         }
 
         # Call _prep_server_detail().

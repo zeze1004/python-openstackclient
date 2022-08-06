@@ -138,6 +138,8 @@ class OpenStackShell(shell.OpenStackShell):
 
 # command argv 값에 따라 출력
 # argv: ['configuration', 'show', '--mask']
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
