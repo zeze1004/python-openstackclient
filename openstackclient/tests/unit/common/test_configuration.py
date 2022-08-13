@@ -25,14 +25,18 @@ class TestConfiguration(utils.TestCommand):
         'auth.token',
         'auth.username',
         'identity_api_version',
+        'password',
         'region',
+        'token',
     )
     datalist = (
         configuration.REDACTED,
         configuration.REDACTED,
         fakes.USERNAME,
         fakes.VERSION,
+        configuration.REDACTED,
         fakes.REGION_NAME,
+        configuration.REDACTED,
     )
 
     opts = [mock.Mock(secret=True, dest="password"),
@@ -60,6 +64,12 @@ class TestConfiguration(utils.TestCommand):
         parsed_args = self.check_parser(cmd, arglist, verifylist)
 
         columns, data = cmd.take_action(parsed_args)
+
+        # TODO: 테스트 케이스 오류 잡기
+        # list_columns = list(columns)
+        # list_columns.remove('password')
+        # list_columns.remove('token')
+        # columns = tuple(list_columns)
 
         self.assertEqual(self.columns, columns)
         datalist = (
