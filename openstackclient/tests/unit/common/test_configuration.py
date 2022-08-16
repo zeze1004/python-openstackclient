@@ -29,6 +29,15 @@ class TestConfiguration(utils.TestCommand):
         'region',
         'token',
     )
+
+    columns_unmask = (
+        'auth.password',
+        'auth.token',
+        'auth.username',
+        'identity_api_version',
+        'region',
+    )
+
     datalist = (
         configuration.REDACTED,
         configuration.REDACTED,
@@ -63,7 +72,7 @@ class TestConfiguration(utils.TestCommand):
         cmd = configuration.ShowConfiguration(self.app, None)
         parsed_args = self.check_parser(cmd, arglist, verifylist)
 
-        columns, data = cmd.take_action(parsed_args)
+        columns_unmask, data = cmd.take_action(parsed_args)
 
         # TODO: 테스트 케이스 오류 잡기
         # list_columns = list(columns)
@@ -71,7 +80,7 @@ class TestConfiguration(utils.TestCommand):
         # list_columns.remove('token')
         # columns = tuple(list_columns)
 
-        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.columns_unmask, columns_unmask)
         datalist = (
             fakes.PASSWORD,
             fakes.AUTH_TOKEN,
